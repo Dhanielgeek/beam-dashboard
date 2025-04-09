@@ -40,7 +40,6 @@ const Register: React.FC = () => {
       {/* Left Column - Dark background with wave pattern */}
       <div className="regbg hidden md:flex md:w-2/5 bg-black flex-col justify-end relative overflow-hidden">
         {/* Wave pattern would be a background image in a real implementation */}
-        {/* <div className="absolute inset-0 bg-[url('')] opacity-30"></div> */}
 
         <div className="p-8 text-white relative z-10">
           {/* Badge */}

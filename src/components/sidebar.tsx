@@ -124,8 +124,8 @@ const NavItem = ({
       className={({ isActive }) =>
         `flex items-center gap-3 px-3 py-2 rounded-md ${
           isActive || active
-            ? "bg-yellow-400 text-black font-semibold"
-            : "hover:bg-gray-800 transition"
+            ? " text-[#F9D900] font-semibold"
+            : "hover:text-[#F9D900] transition"
         }`
       }
     >

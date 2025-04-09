@@ -62,27 +62,29 @@ const Wallet = () => {
               <AddFundsModal onClose={() => setShowAddFundsModal(false)} />
             )}
 
-            <div className="flex flex-col space-y-3">
-              <div className=" flex justify-between  items-center">
+            <div className="flex flex-col space-y-4">
+              {/* First Row - Add Fund/Withdrawal */}
+              <div className="flex justify-between items-center gap-3">
                 <button
                   onClick={() => setShowAddFundsModal(true)}
-                  className="bg-yellow-400 hover:bg-yellow-500 text-black py-1 text-sm px-10 max-md:py-2 max-md:px-12  rounded-md"
+                  className="flex-1 bg-yellow-400 hover:bg-yellow-500 text-black py-3 text-sm rounded-md transition-colors"
                 >
                   Add Fund
                 </button>
-                <button className="bg-white hover:bg-gray-50 text-gray-800 py-1 px-10 max-md:py-3 max-md:px-12 text-sm rounded-md  border border-gray-300">
+                <button className="flex-1 bg-white hover:bg-gray-50 text-gray-800 py-3 text-sm rounded-md border border-gray-300 transition-colors">
                   Withdrawal
                 </button>
               </div>
 
-              <div className="grid grid-cols-3 gap-2">
-                <button className="bg-white hover:bg-gray-50 text-gray-800 py-1 px-2 max-md:py-2 rounded-md text-sm border border-gray-300">
+              {/* Second Row - Action Buttons */}
+              <div className="grid grid-cols-3 gap-3">
+                <button className="bg-white hover:bg-gray-50 text-gray-800 py-3 text-sm rounded-md border border-gray-300 transition-colors">
                   PND Amount
                 </button>
-                <button className="bg-white hover:bg-gray-50 text-gray-800 py-1 px-2 max-md:py-2 rounded-md text-sm border border-gray-300">
+                <button className="bg-white hover:bg-gray-50 text-gray-800 py-3 text-sm rounded-md border border-gray-300 transition-colors">
                   Place Lien
                 </button>
-                <button className="bg-white hover:bg-gray-50 text-gray-800 py-1 px-2 max-md:py-2 rounded-md text-sm border border-gray-300">
+                <button className="bg-white hover:bg-gray-50 text-gray-800 py-3 text-sm rounded-md border border-gray-300 transition-colors">
                   Freeze Wallet
                 </button>
               </div>
