@@ -1,0 +1,5 @@
+@import "tailwindcss";
+
+.regbg {
+  background-image: url("./assets/looper.png");
+}
