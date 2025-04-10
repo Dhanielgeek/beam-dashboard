@@ -9,7 +9,7 @@ interface AuthWrapperProps {
 const AuthWrapper: React.FC<AuthWrapperProps> = ({ title, subtitle }) => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-100 to-gray-200 ">
-      <div className="w-full max-w-[90%] bg-white p-8 rounded-2xl shadow-xl">
+      <div className="w-full max-w-full bg-white p-8 shadow-xl">
         {(title || subtitle) && (
           <div className="mb-8 text-center">
             {title && (

@@ -1,32 +1,49 @@
 import React, { useState } from "react";
+import { Formik, Form } from "formik";
+import * as Yup from "yup";
 import InputField from "../components/inputfield";
 import vector from "../assets/Vector.png";
 import circleway from "../assets/CircleWavyCheck.png";
 import shiled from "../assets/ShieldCheckered.png";
+import axios from "axios";
+import { ImSpinner9 } from "react-icons/im";
+import { useDispatch } from "react-redux";
+import { setToken } from "../Global/slice";
+import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
+
+const LoginSchema = Yup.object().shape({
+  email: Yup.string().email("Invalid email").required("Email is required"),
+  password: Yup.string()
+    .min(6, "Password too short")
+    .required("Password is required"),
+});
 
 const Login: React.FC = () => {
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-  });
+  const url = `${import.meta.env.VITE_DEVE_URL}/users/login`;
 
-  const [errors, setErrors] = useState({
-    email: "",
-    password: "",
-  });
+  const dispatch = useDispatch();
+  const nav = useNavigate();
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-    if (errors[name as keyof typeof errors]) {
-      setErrors((prev) => ({ ...prev, [name]: "" }));
+  const [loading, setloading] = useState(false);
+
+  const handleSubmit = async (values: { email: string; password: string }) => {
+    console.log("Login form submitted", values);
+    setloading(true);
+    try {
+      const res = await axios.post(url, values);
+      dispatch(setToken(res.data.access_token));
+      toast.success("Login Successful");
+      nav("/wallet");
+      console.log(res);
+    } catch (error) {
+      console.log(error);
+      toast.error(
+        error instanceof Error ? error.message : "An unexpected error occurred"
+      );
+    } finally {
+      setloading(false);
     }
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // Add validation or submit logic here
-    console.log("Login form submitted", formData);
   };
 
   return (
@@ -65,46 +82,52 @@ const Login: React.FC = () => {
               Sign in to Beam.
             </h1>
             <p className="text-gray-500 text-sm">
-              Please sign in with the your assigned login details
+              Please sign in with your assigned login details
             </p>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <InputField
-              type="email"
-              label="Email Address"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              placeholder="name@example.com"
-              required
-              error={errors.email}
-            />
+          <Formik
+            initialValues={{ email: "", password: "" }}
+            validationSchema={LoginSchema}
+            onSubmit={handleSubmit}
+          >
+            {() => (
+              <Form className="space-y-6">
+                <InputField
+                  type="email"
+                  label="Email Address"
+                  name="email"
+                  placeholder="name@example.com"
+                  required
+                />
+                <InputField
+                  type="password"
+                  label="Password"
+                  name="password"
+                  placeholder="••••••••"
+                  required
+                />
 
-            <InputField
-              type="password"
-              label="Password"
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-              placeholder="••••••••"
-              required
-              error={errors.password}
-            />
+                <div className="flex justify-end items-center text-sm">
+                  <a href="#" className="text-gray-600 underline-none">
+                    Forgot password?
+                  </a>
+                </div>
 
-            <div className="flex justify-end items-center text-sm">
-              <a href="#" className="text-gray-600 underline-none  ">
-                Forgot password?
-              </a>
-            </div>
-
-            <button
-              type="submit"
-              className="w-full bg-black text-white py-3 rounded-full font-medium hover:bg-gray-800 transition"
-            >
-              Log in
-            </button>
-          </form>
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className={`w-full bg-black flex justify-center items-center text-white py-3 rounded-full font-medium transition ${
+                    loading
+                      ? "opacity-90 cursor-not-allowed"
+                      : "hover:bg-gray-800"
+                  }`}
+                >
+                  {loading ? <ImSpinner9 className="animate-spin" /> : "Log in"}
+                </button>
+              </Form>
+            )}
+          </Formik>
         </div>
       </div>
     </div>

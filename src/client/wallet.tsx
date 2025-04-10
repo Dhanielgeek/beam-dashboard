@@ -1,13 +1,60 @@
 import { Clock, Copy, WalletIcon } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Table from "../components/table";
 import { BsBank2 } from "react-icons/bs";
 import AddFundsModal from "../components/modals/addfundsmodal";
+import axios from "axios";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../Global/store";
+import { jwtDecode } from "jwt-decode";
+import { setUser } from "../Global/slice";
+
+interface DecodedToken {
+  id: string;
+  sub: number;
+}
 
 const Wallet = () => {
   const [activeTab, setActiveTab] = useState("history");
   const [showAddFundsModal, setShowAddFundsModal] = useState(false);
 
+  const token = useSelector((state: RootState) => state.user.token);
+
+  const user = useSelector((state: RootState) => state.user.user);
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (!token) return;
+
+    const decoded = jwtDecode<DecodedToken>(token);
+
+    const id = decoded.sub;
+
+    console.log(id);
+
+    const url = `${import.meta.env.VITE_DEVE_URL}/users/${id}`;
+    const headers = {
+      Authorization: `Bearer ${token}`,
+    };
+
+    const fetchUser = async () => {
+      try {
+        const res = await axios.get(url, { headers });
+        dispatch(setUser(res.data));
+
+        // Access the wallet details
+        const wallet = res.data.wallet;
+        const balance = wallet.balance;
+
+        console.log("Wallet Balance:", balance);
+      } catch (error) {
+        console.error("Error fetching user:", error);
+      }
+    };
+
+    fetchUser();
+  }, [token]);
   return (
     <div className="bg-white h-[calc(100vh-72px)] overflow-y-scroll p-6">
       <div className="max-w-7xl mx-auto">
@@ -29,14 +76,15 @@ const Wallet = () => {
               <div className="flex items-center mb-4">
                 <div className=" flex justify-start w-full items-center py-5 border-[#C8CBD9] border-b-1">
                   <h3 className="text-xl font-bold text-gray-900">
-                    N200,000<span className=" text-sm text-[#C8CBD9]">.00</span>
+                    N{user.wallet.balance}
+                    <span className=" text-sm text-[#C8CBD9]">.00</span>
                   </h3>
                 </div>
               </div>
 
               <div className="flex items-center text-sm font-medium text-gray-600 mb-4">
                 <BsBank2 size={16} className="mr-2" />
-                <span>Wema Bank 010 210 2020</span>
+                <span>Wema Bank {user.wallet.accountNumber}</span>
                 <button className="ml-2 text-gray-400">
                   <Copy size={16} />
                 </button>
